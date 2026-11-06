@@ -81,7 +81,7 @@ table.heat{border-collapse:separate;border-spacing:3px;width:100%;min-width:760p
 .heat td.rn{text-align:right;padding-right:10px;white-space:nowrap;font-weight:500;max-width:210px;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
 .heat td.c{height:30px;min-width:32px;text-align:center;border-radius:6px;font-family:"JetBrains Mono",monospace;font-size:11.5px;background:var(--cell);color:var(--mut)}
 .legend{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--mut);margin-top:8px}
-.legend i{display:inline-block;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#E0566B,#8E0A20)}
+.legend i{display:inline-block;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#FFDD57,#FF8C1A 45%,#D92626 80%,#8E0A20)}
 /* TABLE */
 .tools{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 table.t{width:100%;border-collapse:collapse;font-size:13.5px}
@@ -144,9 +144,9 @@ footer{margin-top:30px;font-size:12px;color:var(--mut);text-align:center;line-he
 .card.fs .cloud{height:auto!important;flex:1;min-height:360px}
 canvas.zoom{cursor:zoom-in}.card.fs canvas.zoom{cursor:default}
 body.fslock{overflow:hidden}
-.card.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.card.rv{opacity:0;transform:translateY(22px);transition:opacity 1.4s ease,transform 1.4s ease}
 .card.rv.in{opacity:1;transform:none}
-.heat td.c{transition:opacity .5s ease,transform .5s ease}
+.heat td.c{transition:opacity 1s ease,transform 1s ease}
 .heat.pre td.c{opacity:0;transform:scale(.3)}
 body:not(.slides) .dots,body:not(.slides) .nextbtn{display:none}
 .card.fs .hint{font-size:15px}
@@ -158,7 +158,7 @@ body:not(.slides) .dots,body:not(.slides) .nextbtn{display:none}
   header{padding-left:16px;padding-right:16px}main{padding:0 12px 40px}
   .t .hide-s{display:none}.card{padding:15px 14px}.search{max-width:none}
 }
-.heat td.c{font-weight:700;font-size:13px;text-shadow:0 1px 1px rgba(0,0,0,.25)}
+.heat td.c{font-weight:700;font-size:13px}
 .heat th{color:var(--ink);font-weight:600}
 mark{background:#FFE08A;color:#1D2330;border-radius:3px;padding:0 2px}
 .search svg{pointer-events:none}
@@ -284,7 +284,7 @@ mark{background:#FFE08A;color:#1D2330;border-radius:3px;padding:0 2px}
   </div>
 
   <footer>Fuente: Listado de prácticas Otoño 2026 con información proporcionada por el departamento de Egresados y Relaciones Interinstitucionales, procesada por la Ing. Dulce María Blanco Ramos.</footer>
-  <section class="card qrcard" id="qrcard"><h2>Código QR</h2><div class="qrbox" id="qrbox" role="button" tabindex="0" title="Ampliar código QR" aria-label="Ampliar código QR"></div><p class="qrtxt">Para seguir consultando la información sigue este código QR o ingresa al link: <a href="https://aejm.github.io/practicaso26" target="_blank" rel="noopener">aejm.github.io/practicaso26</a></p></section>
+  <section class="card qrcard" id="qrcard"><h2>Escanea</h2><div class="qrbox" id="qrbox" role="button" tabindex="0" title="Ampliar código QR" aria-label="Ampliar código QR"></div><p class="qrtxt">Para seguir consultando la información, escanea este código QR o ingresa al link: <a href="https://aejm.github.io/practicaso26" target="_blank" rel="noopener">aejm.github.io/practicaso26</a></p></section>
 </main>
 
 <script>
@@ -310,7 +310,7 @@ Chart.defaults.plugins.tooltip.padding = 10;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
 const charts = {};
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches, revealed={}, pend={};
-function build(id,cfg,first){ cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:RM?0:(first?1500:450),easing:'easeOutQuart'}},cfg.options); charts[id]=new Chart(document.getElementById(id),cfg); }
+function build(id,cfg,first){ cfg.options=Object.assign({responsive:true,maintainAspectRatio:false,animation:{duration:RM?0:(first?3000:900),easing:'easeOutQuart'}},cfg.options); charts[id]=new Chart(document.getElementById(id),cfg); if(RM&&first){ const el=document.getElementById(id); el.style.opacity=0; el.style.transition='opacity 1.6s ease'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ el.style.opacity=1; })); } }
 const ioC=new IntersectionObserver(es=>es.forEach(e=>{ if(!e.isIntersecting) return; const id=e.target.id; revealed[id]=true; ioC.unobserve(e.target); if(pend[id]){ const c=pend[id]; delete pend[id]; build(id,c,true); } }),{threshold:.3});
 function mk(id,cfg){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } const el=document.getElementById(id); if(revealed[id]) build(id,cfg,false); else { pend[id]=cfg; ioC.observe(el); } }
 const ioK=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ ioK.unobserve(e.target); e.target._go&&e.target._go(); } }),{threshold:.6});
@@ -338,7 +338,7 @@ function renderKpis(id,items){
   document.getElementById(id).innerHTML = items.map(k=>{ const num=typeof k[1]==='number'; const small=!num&&String(k[1]).length>8;
     return `<div class="card kpi"><div class="l mono">${k[0]}</div><div class="v" ${small?'style="font-size:clamp(18px,2.2vw,22px);line-height:1.35;padding:6px 0 4px"':''} data-n="${num?k[1]:''}">${num?'0':esc(k[1])}</div><div class="s">${esc(k[2])}</div></div>`; }).join('');
   document.querySelectorAll('#'+id+' .v[data-n]').forEach(el=>{ const n=el.dataset.n; if(n==='') return; const target=parseFloat(n), dec=String(n).includes('.')?1:0; ioK.observe(el); el._go=()=>{ const t0=performance.now();
-    (function f(t){ const k=Math.min(1,(t-t0)/600), e=1-Math.pow(1-k,3); el.textContent=(target*e).toFixed(dec); if(k<1) requestAnimationFrame(f); else el.textContent=fmt(target); })(t0); }; });
+    (function f(t){ const k=Math.min(1,(t-t0)/1200), e=1-Math.pow(1-k,3); el.textContent=(target*e).toFixed(dec); if(k<1) requestAnimationFrame(f); else el.textContent=fmt(target); })(t0); }; });
 }
 function kpis(rows){
   const tot=rows.reduce((a,r)=>a+r.t,0); const emp={}; rows.forEach(r=>emp[r.e]=(emp[r.e]||0)+r.t);
@@ -401,13 +401,15 @@ function chartPareto(rows){
     options:{interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{title:c=>`#${c[0].label} · ${es[c[0].dataIndex][0]}`,label:c=>` Acumulado: ${c.parsed.y}% · aporta ${es[c.dataIndex][1]} vacantes`}}},
       scales:{x:{title:{display:true,text:'Empresas ordenadas por vacantes (ranking)'},grid:{display:false},ticks:{maxTicksLimit:10}},y:{min:0,max:100,ticks:{callback:v=>v+'%'},grid:{color:cv('--grid')},border:{display:false}}}}});
 }
+function heatCol(t){ const S=[[0,[255,221,87]],[.45,[255,140,26]],[.8,[217,38,38]],[1,[142,10,32]]]; let i=0; while(i<S.length-2&&t>S[i+1][0]) i++;
+  const a=S[i],b=S[i+1],k=Math.max(0,Math.min(1,(t-a[0])/(b[0]-a[0]))); const c=a[1].map((x,n)=>Math.round(x+(b[1][n]-x)*k)); const L=(0.299*c[0]+0.587*c[1]+0.114*c[2])/255; return [c[0],c[1],c[2],L>.6?'#1D2330':'#fff']; }
 function heat(rows){
   const es=empTotals(rows).slice(0,10).map(x=>x[0]);
   const spx=selProgs(); const ps=ORDER.filter(p=>spx.has(p));
   const mat=es.map(n=>ps.map(p=>rows.filter(r=>r.e===n).reduce((a,r)=>a+(r.v[p]||0),0)));
   const mx=Math.max(1,...mat.flat());
   let h='<table class="heat'+(revealed.heat?'':' pre')+'"><thead><tr><th></th>'+ps.map(p=>`<th class="col" style="box-shadow:inset 0 -3px 0 ${FC[P2F[p]]}">${PN[p]}</th>`).join('')+'</tr></thead><tbody>';
-  es.forEach((n,i)=>{ h+=`<tr><td class="rn" title="${esc(n)}">${esc(n)}</td>`+mat[i].map((v,j)=>{ if(!v) return `<td class="c" style="transition-delay:${i*40+j*25}ms">·</td>`; const q=v/mx, cr=Math.round(224-82*q), cg=Math.round(86-76*q), cb=Math.round(107-75*q); return `<td class="c" style="transition-delay:${i*40+j*25}ms;background:rgb(${cr},${cg},${cb});color:#fff" title="${esc(n)} · ${v}">${v}</td>`; }).join('')+'</tr>'; });
+  es.forEach((n,i)=>{ h+=`<tr><td class="rn" title="${esc(n)}">${esc(n)}</td>`+mat[i].map((v,j)=>{ if(!v) return `<td class="c" style="transition-delay:${i*80+j*50}ms">·</td>`; const hc=heatCol(Math.pow(v/mx,.8)); return `<td class="c" style="transition-delay:${i*80+j*50}ms;background:rgb(${hc[0]},${hc[1]},${hc[2]});color:${hc[3]}" title="${esc(n)} · ${v}">${v}</td>`; }).join('')+'</tr>'; });
   document.getElementById('heat').innerHTML = rows.length? h+'</tbody></table>' : '<div class="empty">Sin datos para esta selección</div>';
   if(!revealed.heat) ioH.observe(document.getElementById('heat'));
 }
@@ -496,7 +498,7 @@ function render2(skipK){
 /* ---- Esfera 3D de empresas ---- */
 const SECS=['Educación e investigación','Automotriz','Aeronáutica','TI y telecomunicaciones','Salud','Construcción e infraestructura','Industria, energía y servicios'];
 const SCOL={'Educación e investigación':'#2F8F9D','Automotriz':'#C8102E','Aeronáutica':'#D98E04','TI y telecomunicaciones':'#4F6D9A','Salud':'#D6457A','Construcción e infraestructura':'#7C9A3D','Industria, energía y servicios':'#8A94A6'};
-const cloud={nodes:[],focus:null,ay:0,ax:.38,vy:0,hover:false,hold:false,drag:false,tm:null,W:0,H:0,R:0,base:matchMedia('(prefers-reduced-motion: reduce)').matches?0:-0.28};
+const cloud={nodes:[],focus:null,ay:0,ax:.38,vy:0,hover:false,hold:false,drag:false,tm:null,W:0,H:0,R:0,base:matchMedia('(prefers-reduced-motion: reduce)').matches?0:-0.14};
 cloud.vy=cloud.base;
 function cinfo(c){ const ps=Object.entries(c.p).map(([p,v])=>`${p} (${v})`).join(', ');
   $('cloudinfo').innerHTML=`<b style="color:${SCOL[c.c]}">${esc(c.f)}</b> · ${esc(c.c)} · `+(c.np?`<b>${c.v}</b> vacantes ofertadas en ${c.np} proyecto${c.np>1?'s':''}${ps?' — '+esc(ps):''}`:'sin proyectos en el listado de oferta'); }
